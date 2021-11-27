@@ -24,6 +24,7 @@ share {
   plugin 'Build::Copy';
   after build => sub {
       my($build) = @_;
+      $build->runtime_prop->{'python-source'} = 1;
       $build->runtime_prop->{command} = 'meson.py';
   };
 }
