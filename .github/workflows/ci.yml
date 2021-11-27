@@ -106,6 +106,7 @@ jobs:
             base-devel
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-perl
+            mingw-w64-x86_64-curl
       - name: Set up Meson (MSYS2/MinGW pacman)
         if: runner.os == 'Windows' && matrix.dist == 'msys2' && matrix.alien-install-type == 'system'
         shell: msys2 {0}
