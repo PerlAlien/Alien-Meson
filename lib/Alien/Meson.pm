@@ -9,7 +9,7 @@ use Path::Tiny;
 
 =head1 NAME
 
-Alien::Meson - Find or build meson
+Alien::Meson - Find or build meson build tool
 
 =head1 SYNOPSIS
 
@@ -44,6 +44,10 @@ sub bin_dir {
 =head1 SEE ALSO
 
 =over 4
+
+=item L<Meson|https://mesonbuild.com/>
+
+The Meson Build system home page.
 
 =item L<Alien>
 
