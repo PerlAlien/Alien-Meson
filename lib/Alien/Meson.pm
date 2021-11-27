@@ -9,7 +9,7 @@ use Path::Tiny;
 
 =head1 NAME
 
-Alien::Meson - Find or build meson
+Alien::Meson - Find or build meson build tool
 
 =head1 SYNOPSIS
 
@@ -19,6 +19,7 @@ Command line tool:
  use Env qw( @PATH );
 
  unshift @PATH, Alien::Meson->bin_dir;
+ system "@{[ Alien::Meson->exe ]}";
 
 =head1 DESCRIPTION
 
@@ -30,6 +31,27 @@ from the internet and it will be installed in a private share location
 for the use of other modules.
 
 =cut
+
+=head1 METHODS
+
+=head2 exe
+
+ Alien::Meson->exe
+
+Returns the command name for running meson.
+
+=cut
+
+sub exe {
+  my($class) = @_;
+  if( $class->install_type('share')
+    && $^O eq 'MSWin32'
+    && $class->runtime_prop->{'python-source'}
+    ) {
+    return ( 'python3', Path::Tiny->new( $class->bin_dir, $class->runtime_prop->{command}) );
+  }
+  $class->runtime_prop->{command};
+}
 
 sub bin_dir {
   my ($class) = @_;
@@ -44,6 +66,10 @@ sub bin_dir {
 =head1 SEE ALSO
 
 =over 4
+
+=item L<Meson|https://mesonbuild.com/>
+
+The Meson Build system home page.
 
 =item L<Alien>
 
