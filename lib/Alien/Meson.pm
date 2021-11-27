@@ -63,6 +63,25 @@ sub bin_dir {
   }
 }
 
+=head1 HELPERS
+
+=head2 meson
+
+ %{meson}
+
+Returns 'meson', 'meson.py', or appropriate command for
+platform.
+
+=cut
+
+sub alien_helper {
+  return +{
+    meson => sub {
+      Alien::Meson->exe;
+    },
+  };
+}
+
 =head1 SEE ALSO
 
 =over 4
