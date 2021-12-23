@@ -9,12 +9,29 @@ plugin 'Probe::CommandLine' => (
 
 share {
   requires 'Path::Tiny';
+  requires 'File::Which';
+  requires 'Capture::Tiny';
   start_url 'https://github.com/mesonbuild/meson/releases';
   plugin Download => (
     filter  => qr/^meson-.*\.tar\.gz$/,
     version => qr/([0-9\.]+)/,
   );
   plugin 'Extract::CommandLine' => 'tar.gz';
+  my $python_bin;
+  PYTHON_BIN:
+  for my $test_python_bin ( qw(python3 python) ) {
+    if(
+      File::Which::which($test_python_bin)
+      &&
+      Capture::Tiny::capture(sub {
+            system( $test_python_bin, qw( --version ) )
+      }) =~ /^Python 3/
+    ) {
+      $python_bin = $test_python_bin;
+      last PYTHON_BIN;
+    }
+  }
+  die "No Python3 found" unless defined $python_bin;
   patch sub {
     my @tests = Path::Tiny::path('.')->children( qr/.*test.*/ );
     $_->remove_tree for @tests;
@@ -26,5 +43,6 @@ share {
     my($build) = @_;
     $build->runtime_prop->{'python-source'} = 1;
     $build->runtime_prop->{command} = 'meson.py';
+    $build->runtime_prop->{python_bin} = $python_bin;
   };
 }

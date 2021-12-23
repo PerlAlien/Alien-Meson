@@ -48,7 +48,9 @@ sub exe {
     && $^O eq 'MSWin32'
     && $class->runtime_prop->{'python-source'}
     ) {
-    return ( 'python3', Path::Tiny->new( $class->bin_dir, $class->runtime_prop->{command}) );
+    return (
+      $class->runtime_prop->{python_bin},
+      Path::Tiny->new( $class->bin_dir, $class->runtime_prop->{command} ) );
   }
   $class->runtime_prop->{command};
 }
