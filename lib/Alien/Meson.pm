@@ -45,7 +45,6 @@ Returns the command name for running meson.
 sub exe {
   my($class) = @_;
   if( $class->install_type('share')
-    && $^O eq 'MSWin32'
     && $class->runtime_prop->{'python-source'}
     ) {
     return (
