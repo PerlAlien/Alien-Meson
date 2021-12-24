@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.01_01   2021-12-23 19:58:50-05:00 America/New_York (TRIAL RELEASE)
   - Look for Python 3 to run Meson script.
     See <https://github.com/PerlAlien/Alien-Meson/pull/3>.
 
