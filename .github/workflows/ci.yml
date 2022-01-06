@@ -61,32 +61,27 @@ jobs:
         os: [ubuntu-latest]
         perl-version: ['5.8', '5.20', '5.30', '5.34']
         alien-install-type: [ 'system', 'share' ]
+        alien-meson-from-source: [ false ] # false is the default for $ALIEN_MESON_FROM_SOURCE
         include:
-          - perl-version: '5.34'
-            os: windows-latest
-            dist: strawberry
-            alien-install-type: 'share'
-          - perl-version: '5.34'
-            os: windows-latest
-            dist: msys2
-            alien-install-type: 'system'
-          - perl-version: '5.34'
-            os: windows-latest
-            dist: msys2
-            alien-install-type: 'share'
-          - perl-version: '5.34'
-            os: macos-11
-            alien-install-type: 'system'
-          - perl-version: '5.34'
-            os: macos-11
-            alien-install-type: 'share'
-    name: Perl ${{ matrix.perl-version }} on ${{ matrix.os }} with install-type ${{ matrix.alien-install-type }}, dist ${{ matrix.dist }}
+          # Windows strawberry     | (share, toggle from-source)
+          - { perl-version: '5.34' , os: windows-latest , dist: strawberry , alien-install-type: 'share'                                  }
+          - { perl-version: '5.34' , os: windows-latest , dist: strawberry , alien-install-type: 'share'  , alien-meson-from-source: true }
+          # Windows msys2          | system, (share, toggle from-source)
+          - { perl-version: '5.34' , os: windows-latest , dist: msys2      , alien-install-type: 'system'                                 }
+          - { perl-version: '5.34' , os: windows-latest , dist: msys2      , alien-install-type: 'share'                                  }
+          - { perl-version: '5.34' , os: windows-latest , dist: msys2      , alien-install-type: 'share'  , alien-meson-from-source: true }
+          # macOS                  | system, share
+          - { perl-version: '5.34' , os: macos-11       ,                    alien-install-type: 'system'                                 }
+          - { perl-version: '5.34' , os: macos-11       ,                    alien-install-type: 'share'                                  }
+    name: Perl ${{ matrix.perl-version }} on ${{ matrix.os }} with install-type ${{ matrix.alien-install-type }}, dist ${{ matrix.dist }}, from-source ${{ !! matrix.alien-meson-from-source }}
 
     steps:
       - name: Get dist artifact
         uses: actions/download-artifact@v2
         with:
           name: dist
+
+      # Note Python3 is already installed in virtual-environments.
 
       # Setup system Meson
       - name: Setup system Meson (apt)
@@ -140,6 +135,12 @@ jobs:
         shell: bash
         run: |
           echo "ALIEN_INSTALL_TYPE=${{ matrix.alien-install-type }}" >> $GITHUB_ENV
+
+      - name: Set ALIEN_MESON_FROM_SOURCE
+        if: matrix.alien-meson-from-source
+        shell: bash
+        run: |
+          echo "ALIEN_MESON_FROM_SOURCE=${{ fromJSON( '["0", "1"]')[ matrix.alien-meson-from-source ] }}" >> $GITHUB_ENV
 
       - name: Run tests
         run: |
