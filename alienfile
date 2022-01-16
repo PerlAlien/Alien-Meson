@@ -119,30 +119,40 @@ share {
 
   $ENV{ALIEN_MESON_SHARE_PREFER} ||= 'auto';
 
+  my $release_types = {
+    source => {
+      'can' => \&can_source,
+      'do'  => \&do_source,
+    },
+    binary => {
+      'can' => \&can_binary,
+      'do'  => \&do_binary,
+    },
+  };
+
   if( $ENV{ALIEN_MESON_SHARE_PREFER} eq 'auto' ) {
-    eval { can_source() };
-    my $source_catch = $@;
-    warn "Unable to install from source: $source_catch"
-      if $source_catch;
+    my $which_type;
+    my @types = qw(source binary);
+    for my $type (@types) {
+      eval { $release_types->{$type}{can}->() };
+      my $catch = $@;
+      if( $catch ) {
+        warn "Unable to install release type $type: $catch";
+	next;
+      }
 
-    eval { can_binary() };
-    my $binary_catch = $@;
-    warn "Unable to install from binary: $binary_catch"
-      if $binary_catch;
-
-    if( ! $source_catch ) {
-      do_source();
-    }  elsif( ! $binary_catch ) {
-      do_binary();
-    } else {
-      die "Unable to install source nor binary release";
+      $which_type = $type;
+      $release_types->{$type}{do}->();
+      last;
     }
-  } elsif( $ENV{ALIEN_MESON_SHARE_PREFER} eq 'binary' ) {
-    can_binary();
-    do_binary();
-  } elsif( $ENV{ALIEN_MESON_SHARE_PREFER} eq 'source') {
-    can_source();
-    do_source();
+
+    if( ! $which_type ) {
+      die "Unable to install from release types: @types";
+    }
+  } elsif( exists $release_types->{ $ENV{ALIEN_MESON_SHARE_PREFER} } ) {
+    $release_types->{ $ENV{ALIEN_MESON_SHARE_PREFER} }{$_}->() for qw(can do);
+  } else {
+    die "Unknown value for ALIEN_MESON_SHARE_PREFER: $ENV{ALIEN_MESON_SHARE_PREFER}";
   }
 
 };
