@@ -58,6 +58,10 @@ sub bin_dir {
   my ($class) = @_;
   if($class->install_type('share')) {
     my $dir = Path::Tiny->new($class->dist_dir);
+    my $bin_dir = $dir->child('bin');
+    if( -d $bin_dir ) {
+      return ("$bin_dir");
+    }
     return -d $dir ? ("$dir") : ();
   } else {
     return $class->SUPER::bin_dir(@_);
