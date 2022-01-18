@@ -117,7 +117,7 @@ sub do_binary {
 
       Alien::Build::CommandSequence->new([
         qw(pkgutil --expand-full),
-	$build->install_prop->{download},
+        $build->install_prop->{download},
         'meson'
       ])->execute($build);
     };
@@ -173,7 +173,7 @@ share {
       my $catch = $@;
       if( $catch ) {
         warn "Unable to install release type $type: $catch";
-	next;
+        next;
       }
 
       $which_type = $type;
