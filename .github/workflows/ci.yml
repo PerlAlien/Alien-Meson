@@ -74,7 +74,9 @@ jobs:
           - { perl-version: '5.34' , os: windows-latest , dist: msys2      , alien-install-type: 'share'  , alien-meson-share-prefer: 'source' }
           # macOS                  | system, share
           - { perl-version: '5.34' , os: macos-11       ,                    alien-install-type: 'system'                                      }
-          - { perl-version: '5.34' , os: macos-11       ,                    alien-install-type: 'share'                                       }
+          - { perl-version: '5.34' , os: macos-11       ,                    alien-install-type: 'share'  , alien-meson-share-prefer: 'auto'   }
+          - { perl-version: '5.34' , os: macos-11       ,                    alien-install-type: 'share'  , alien-meson-share-prefer: 'binary' }
+          - { perl-version: '5.34' , os: macos-11       ,                    alien-install-type: 'share'  , alien-meson-share-prefer: 'source' }
     name: Perl ${{ matrix.perl-version }} on ${{ matrix.os }} with install-type ${{ matrix.alien-install-type }}, dist ${{ matrix.dist }}, share-prefer ${{ matrix.alien-meson-share-prefer || 'auto' }}
 
     steps:

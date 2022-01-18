@@ -64,6 +64,13 @@ sub can_binary {
     return;
   }
 
+  if( $^O eq 'darwin' ) {
+    # macOS
+    $binary_release_name_re = qr/meson-.*\.pkg/;
+    $binary_release_format = '.pkg';
+    return;
+  }
+
   die "No binary packages available for this configuration";
 }
 
@@ -95,6 +102,34 @@ sub do_binary {
       $Meson->child('ninja.exe')->remove;
       File::Copy::Recursive::rmove( "$Meson/*", $cwd );
       $Meson->remove_tree;
+    };
+
+    plugin 'Build::Copy';
+
+    after build => sub {
+      my($build) = @_;
+      $build->runtime_prop->{'style'} = 'binary';
+      $build->runtime_prop->{command} = 'meson';
+    };
+  } elsif( $binary_release_format eq '.pkg' ) {
+    extract sub {
+      my ($build) = @_;
+
+      Alien::Build::CommandSequence->new([
+        qw(pkgutil --expand-full),
+	$build->install_prop->{download},
+        'meson'
+      ])->execute($build);
+    };
+
+    patch sub {
+      my $cwd = Path::Tiny->cwd;
+      my $meson_top = $cwd->child('meson.pkg/Payload/usr/local');
+      # remove some small extra files?
+      #$_->remove_tree for $cwd->children( qr/^(Distribution|Resources)$/ );
+      $meson_top->child('bin', 'ninja')->remove;
+      File::Copy::Recursive::rmove( "$meson_top/*", $cwd );
+      $meson_top->remove_tree;
     };
 
     plugin 'Build::Copy';
