@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.01_03   2022-01-18 21:31:28-05:00 America/New_York (TRIAL RELEASE)
   - Add ALIEN_MESON_SHARE_PREFER environment variable to control what kind of
     release to use (source/binary).
     See <https://github.com/PerlAlien/Alien-Meson/issues/5>,
