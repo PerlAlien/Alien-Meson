@@ -1,6 +1,13 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add ALIEN_MESON_SHARE_PREFER environment variable to control what kind of
+    release to use (source/binary).
+    See <https://github.com/PerlAlien/Alien-Meson/issues/5>,
+    <https://github.com/PerlAlien/Alien-Meson/pull/7>.
+  - Add support for macOS .pkg binary release.
+    See <https://github.com/PerlAlien/Alien-Meson/issues/6>,
+    <https://github.com/PerlAlien/Alien-Meson/pull/8>.
 
 0.01_02   2022-01-06 15:16:33-05:00 America/New_York (TRIAL RELEASE)
   - Use pre-built .msi on MSWin32 if possible.
