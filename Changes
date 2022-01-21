@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - No change from v0.01_03.
 
 0.01_03   2022-01-18 21:31:28-05:00 America/New_York (TRIAL RELEASE)
   - Add ALIEN_MESON_SHARE_PREFER environment variable to control what kind of
