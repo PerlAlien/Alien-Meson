@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.02      2022-01-20 20:21:33-05:00 America/New_York
   - No change from v0.01_03.
 
 0.01_03   2022-01-18 21:31:28-05:00 America/New_York (TRIAL RELEASE)
