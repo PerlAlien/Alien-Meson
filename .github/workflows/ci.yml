@@ -153,5 +153,7 @@ jobs:
           echo "ALIEN_MESON_SHARE_PREFER=${{ matrix.alien-meson-share-prefer }}" >> $GITHUB_ENV
 
       - name: Run tests
+        env:
+          ALIEN_BUILD_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cpanm --verbose --test-only .
