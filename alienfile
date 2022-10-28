@@ -42,7 +42,7 @@ sub do_source {
   plugin 'Download::GitHub' => (
     %github_info,
     asset       => 1,
-    asset_name  => qr/^meson-.*\.tar\.gz$/,
+    asset_name  => qr/^meson-([0-9\.]+)\.tar\.gz$/,
     version     => qr/([0-9\.]+)/,
   );
   patch sub {
