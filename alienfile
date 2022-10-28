@@ -89,7 +89,8 @@ sub do_binary {
   );
 
   if( $binary_release_format eq '.msi' ) {
-    extract sub {
+    meta->around_hook( extract => sub {
+      my $orig    = shift;
       my ($build) = @_;
 
       my $msi = Path::Tiny::path($build->install_prop->{download})->canonpath;
@@ -101,7 +102,7 @@ sub do_binary {
         "TARGETDIR=$cwd",
         '/qn'
       ])->execute($build);
-    };
+    });
 
     patch sub {
       my $cwd = Path::Tiny->cwd;
@@ -120,7 +121,8 @@ sub do_binary {
       $build->runtime_prop->{command} = 'meson';
     };
   } elsif( $binary_release_format eq '.pkg' ) {
-    extract sub {
+    meta->around_hook( extract => sub {
+      my $orig    = shift;
       my ($build) = @_;
 
       Alien::Build::CommandSequence->new([
@@ -128,7 +130,7 @@ sub do_binary {
         $build->install_prop->{download},
         'meson'
       ])->execute($build);
-    };
+    });
 
     patch sub {
       my $cwd = Path::Tiny->cwd;
