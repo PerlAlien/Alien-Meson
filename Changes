@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Switch to using Download::GitHub plugin.
 
 0.02      2022-01-20 20:21:33-05:00 America/New_York
   - No change from v0.01_03.

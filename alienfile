@@ -14,6 +14,11 @@ plugin 'Probe::CommandLine' => (
   version => qr/([0-9\.]+)/,
 ) for qw( meson.py meson );
 
+my %github_info = (
+  github_user => 'mesonbuild',
+  github_repo => 'meson',
+);
+
 my $python_bin;
 sub can_source {
   for my $test_python_bin ( qw(python3 python) ) {
@@ -34,11 +39,12 @@ sub can_source {
 
 sub do_source {
   # Python source
-  plugin Download => (
-    filter  => qr/^meson-.*\.tar\.gz$/,
-    version => qr/([0-9\.]+)/,
+  plugin 'Download::GitHub' => (
+    %github_info,
+    asset       => 1,
+    asset_name  => qr/^meson-([0-9\.]+)\.tar\.gz$/,
+    version     => qr/([0-9\.]+)/,
   );
-  plugin 'Extract::CommandLine' => 'tar.gz';
   patch sub {
     my @tests = Path::Tiny::path('.')->children( qr/.*test.*/ );
     $_->remove_tree for @tests;
@@ -75,13 +81,16 @@ sub can_binary {
 }
 
 sub do_binary {
-  plugin Download => (
-    filter  => $binary_release_name_re,
-    version => qr/([0-9\.]+)/,
+  plugin 'Download::GitHub' => (
+    %github_info,
+    asset       => 1,
+    asset_name  => $binary_release_name_re,
+    version     => qr/([0-9\.]+)/,
   );
 
   if( $binary_release_format eq '.msi' ) {
-    extract sub {
+    meta->around_hook( extract => sub {
+      my $orig    = shift;
       my ($build) = @_;
 
       my $msi = Path::Tiny::path($build->install_prop->{download})->canonpath;
@@ -93,7 +102,7 @@ sub do_binary {
         "TARGETDIR=$cwd",
         '/qn'
       ])->execute($build);
-    };
+    });
 
     patch sub {
       my $cwd = Path::Tiny->cwd;
@@ -112,7 +121,8 @@ sub do_binary {
       $build->runtime_prop->{command} = 'meson';
     };
   } elsif( $binary_release_format eq '.pkg' ) {
-    extract sub {
+    meta->around_hook( extract => sub {
+      my $orig    = shift;
       my ($build) = @_;
 
       Alien::Build::CommandSequence->new([
@@ -120,7 +130,7 @@ sub do_binary {
         $build->install_prop->{download},
         'meson'
       ])->execute($build);
-    };
+    });
 
     patch sub {
       my $cwd = Path::Tiny->cwd;
@@ -148,9 +158,6 @@ share {
   requires 'Capture::Tiny';
   requires 'Alien::Build::CommandSequence';
   requires 'File::Copy::Recursive';
-
-  # same URL used for both source and binary releases
-  start_url 'https://github.com/mesonbuild/meson/releases';
 
   $ENV{ALIEN_MESON_SHARE_PREFER} ||= 'auto';
 
