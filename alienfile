@@ -83,14 +83,14 @@ sub can_binary {
 sub do_binary {
   plugin 'Download::GitHub' => (
     %github_info,
-    asset       => 1,
-    asset_name  => $binary_release_name_re,
-    version     => qr/([0-9\.]+)/,
+    asset        => 1,
+    asset_name   => $binary_release_name_re,
+    asset_format => 'none',
+    version      => qr/([0-9\.]+)/,
   );
 
   if( $binary_release_format eq '.msi' ) {
-    meta->around_hook( extract => sub {
-      my $orig    = shift;
+    extract sub {
       my ($build) = @_;
 
       my $msi = Path::Tiny::path($build->install_prop->{download})->canonpath;
@@ -102,7 +102,7 @@ sub do_binary {
         "TARGETDIR=$cwd",
         '/qn'
       ])->execute($build);
-    });
+    };
 
     patch sub {
       my $cwd = Path::Tiny->cwd;
@@ -121,8 +121,7 @@ sub do_binary {
       $build->runtime_prop->{command} = 'meson';
     };
   } elsif( $binary_release_format eq '.pkg' ) {
-    meta->around_hook( extract => sub {
-      my $orig    = shift;
+    extract sub {
       my ($build) = @_;
 
       Alien::Build::CommandSequence->new([
@@ -130,7 +129,7 @@ sub do_binary {
         $build->install_prop->{download},
         'meson'
       ])->execute($build);
-    });
+    };
 
     patch sub {
       my $cwd = Path::Tiny->cwd;
