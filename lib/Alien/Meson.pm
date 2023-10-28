@@ -82,7 +82,7 @@ platform.
 sub alien_helper {
   return +{
     meson => sub {
-      Alien::Meson->exe;
+      join " ", Alien::Meson->exe;
     },
   };
 }

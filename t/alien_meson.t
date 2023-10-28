@@ -12,6 +12,9 @@ diag "Alien::Meson->runtime_prop ", Dumper( [ Alien::Meson->runtime_prop ] );
 
 diag "Alien::Meson->exe: ", Dumper( [ Alien::Meson->exe ] );
 
+helper_ok 'meson';
+interpolate_template_is '%{meson}', join " ", Alien::Meson->exe;
+
 run_ok([ Alien::Meson->exe, qw(--version) ])
   ->success
   ->out_like(qr/[0-9\.]+/);
