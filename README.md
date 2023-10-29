@@ -12,6 +12,27 @@ Command line tool:
     unshift @PATH, Alien::Meson->bin_dir;
     system "@{[ Alien::Meson->exe ]}";
 
+Use in [alienfile](https://metacpan.org/pod/alienfile):
+
+    share {
+      requires 'Alien::Meson';
+      requires 'Alien::Ninja';
+      # ...
+      my $build_dir = '_build';
+      build [
+        sub {
+          my $build = shift;
+          Alien::Build::CommandSequence->new([
+            Alien::Meson->exe, 'setup',
+              '--prefix=%{.install.prefix}',
+              $build_dir,
+          ])->execute($build);
+        },
+        [ '%{ninja}', qw(-C), $build_dir, "test" ],
+        [ '%{ninja}', qw(-C), $build_dir, 'install' ],
+      ];
+    }
+
 # DESCRIPTION
 
 This distribution provides meson so that it can be used by other
@@ -34,6 +55,11 @@ Returns the command name for running meson.
 ## meson
 
     %{meson}
+
+**WARNING**: This interpolation is deprecated. This will be removed in a future
+version as some share installs of Meson are not callable as a single executable
+(they need to be prefixed with the Python interpreter). Instead use
+`Alien::Meson->exe` directly.
 
 Returns 'meson', 'meson.py', or appropriate command for
 platform.
