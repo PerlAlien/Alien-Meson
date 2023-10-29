@@ -2,6 +2,11 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Fix missing $VERSION.
+    See <https://github.com/PerlAlien/Alien-Meson/pull/12>.
+  - Fix extraction of binary on Windows.
+    See <https://github.com/PerlAlien/Alien-Meson/pull/13>.
+  - Fix interpolation of helper (specifically fixes source install).
+    See <https://github.com/PerlAlien/Alien-Meson/pull/13>.
 
 0.03      2022-11-01 15:46:12-04:00 America/New_York
   - Switch to using Download::GitHub plugin.
