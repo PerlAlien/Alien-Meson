@@ -21,6 +21,27 @@ Command line tool:
  unshift @PATH, Alien::Meson->bin_dir;
  system "@{[ Alien::Meson->exe ]}";
 
+Use in L<alienfile>:
+
+  share {
+    requires 'Alien::Meson';
+    requires 'Alien::Ninja';
+    # ...
+    my $build_dir = '_build';
+    build [
+      sub {
+        my $build = shift;
+        Alien::Build::CommandSequence->new([
+          Alien::Meson->exe, 'setup',
+            '--prefix=%{.install.prefix}',
+            $build_dir,
+        ])->execute($build);
+      },
+      [ '%{ninja}', qw(-C), $build_dir, "test" ],
+      [ '%{ninja}', qw(-C), $build_dir, 'install' ],
+    ];
+  }
+
 =head1 DESCRIPTION
 
 This distribution provides meson so that it can be used by other
