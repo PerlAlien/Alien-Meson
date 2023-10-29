@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Deprecate interpolation of `%{meson}`.
 
 0.04      2023-10-28 21:26:14-04:00 America/New_York
   - Fix missing $VERSION.
