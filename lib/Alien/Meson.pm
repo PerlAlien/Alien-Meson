@@ -74,6 +74,11 @@ sub bin_dir {
 
  %{meson}
 
+B<WARNING>: This interpolation is deprecated. This will be removed in a future
+version as some share installs of Meson are not callable as a single executable
+(they need to be prefixed with the Python interpreter). Instead use
+C<< Alien::Meson->exe >> directly.
+
 Returns 'meson', 'meson.py', or appropriate command for
 platform.
 
@@ -82,6 +87,7 @@ platform.
 sub alien_helper {
   return +{
     meson => sub {
+      warn "Interpolation of %{meson} is deprecated. See POD for Alien::Meson.";
       join " ", Alien::Meson->exe;
     },
   };
