@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.06      2023-11-08 23:09:38-05:00 America/New_York
   - Add DESTDIR prefix hack. See issue <https://github.com/PerlAlien/Alien-Build/issues/407>
     for more information. See <https://github.com/PerlAlien/Alien-Meson/pull/15>.
 
