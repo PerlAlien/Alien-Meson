@@ -50,6 +50,24 @@ for the use of other modules.
 
 Returns the command name for running meson.
 
+## \_apply\_destdir\_prefix\_hack
+
+    use alienfile;
+
+    eval {
+      require Alien::Meson;
+      Alien::Meson->_apply_destdir_prefix_hack;
+    };
+
+    share { ... }
+
+Applies a hack to fix how the `DESTDIR` and prefix are joined to follow the
+approach that Meson takes. See issue at [https://github.com/PerlAlien/Alien-Build/issues/407](https://github.com/PerlAlien/Alien-Build/issues/407)
+for more information.
+
+**WARNING**: This is a hack. It is not expected to work long-term and if a
+better solution is possible, it will be deprecated then removed.
+
 # HELPERS
 
 ## meson
